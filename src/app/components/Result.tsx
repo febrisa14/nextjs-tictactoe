@@ -6,7 +6,7 @@ import React from 'react'
 export default function Result({ isTie, isWinner, playerChoose }: {
     isTie: boolean,
     isWinner: string,
-    playerChoose: string
+    playerChoose: string | null
 }) {
     let message = "";
     let headerMessage = "";
@@ -19,7 +19,7 @@ export default function Result({ isTie, isWinner, playerChoose }: {
     console.log(isWinner, playerChoose)
 
     if (isWinner) {
-        headerMessage = isWinner === playerChoose.toUpperCase() ? "YOU WON" : "OH NO, You Lost...";
+        headerMessage = isWinner === playerChoose?.toUpperCase() ? "YOU WON" : "OH NO, You Lost...";
         message = isWinner + " WON THIS ROUND";
     }
 

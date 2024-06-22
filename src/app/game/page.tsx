@@ -108,7 +108,7 @@ export default function Page() {
             }
         }
 
-        if (currentSquares.filter((square) => square != null).length === 9) {
+        if (currentSquares.filter((square: string) => square != null).length === 9) {
             setIsTie(true);
             return null;
         }
