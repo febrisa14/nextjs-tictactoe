@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Board from '../components/Board';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import Result from '../components/Result';
 
 const box = [
     {
@@ -45,15 +47,19 @@ const box = [
 ];
 
 export default function Page() {
-    const [squares, setSquares] = useState([Array(9).fill(null)]);
-    const [currentMove, setCurrentMove] = useState(0);
-    const xIsNext = currentMove % 2 === 0;
+    const searchParam = useSearchParams();
+    const player1 = searchParam.get("player1");
+
+    const [squares, setSquares] = useState<any[]>([Array(9).fill(null)]);
+    const [currentMove, setCurrentMove] = useState<number>(0);
+    const [xIsNext, setXIsNext] = useState<boolean>(player1 === "x");
     const currentSquares = squares[currentMove];
-    const [amountX, setAmountX] = useState(0);
-    const [amountO, setAmountO] = useState(0);
+    const [amountX, setAmountX] = useState<number>(0);
+    const [amountO, setAmountO] = useState<number>(0);
     const [linesWinner, setLinesWinner] = useState<number[]>([]);
-    const [isTie, setIsTie] = useState(false);
-    const [isWinner, setIsWinner] = useState("");
+    const [isTie, setIsTie] = useState<boolean>(false);
+    const [isWinner, setIsWinner] = useState<string>("");
+    const [showResult, setShowResult] = useState<boolean>(false);
 
     const handlePlay = (nextSquares: string[]) => {
         const nextHistory = [...squares.slice(0, currentMove + 1), nextSquares];
@@ -72,9 +78,11 @@ export default function Page() {
         if (xIsNext) {
             nextSquares[i] = "X";
             setAmountX((prevState) => prevState + 1);
+            setXIsNext(false);
         } else {
             nextSquares[i] = "O";
             setAmountO((prevState) => prevState + 1);
+            setXIsNext(true);
         }
         handlePlay(nextSquares);
     }
@@ -110,10 +118,14 @@ export default function Page() {
 
     useEffect(() => {
         calculateWinner(currentSquares);
-    }, [currentSquares]);
+        if (isWinner || isTie) {
+            setShowResult(true);
+        }
+    }, [currentSquares, isWinner, isTie]);
 
     return (
-        <main className="flex min-h-screen flex-col justify-center items-center">
+        <main className="flex min-h-screen flex-col justify-center items-center relative">
+            {showResult && <Result isTie={isTie} isWinner={isWinner} playerChoose={player1} />}
             <div className='container w-3/4 sm:w-1/4 space-y-4'>
                 <div className='flex justify-between items-center'>
                     <Image src={"/xo.svg"} width={100} height={50} alt="xo"></Image>
@@ -129,11 +141,11 @@ export default function Page() {
                 </div>
                 <div className='w-full flex justify-between gap-4 items-center'>
                     <div className='bg-blue-400 p-2 w-full rounded-xl text-center flex flex-col'>
-                        <span className='text-sm'>X (CPU)</span>
+                        <span className='text-sm'>X ({player1 === "x" ? "You" : "CPU"})</span>
                         <span className='font-bold text-sm'>{amountX}</span>
                     </div>
                     <div className='bg-yellow-300 p-2 w-full rounded-xl text-center flex flex-col'>
-                        <span className='text-sm'>O (You)</span>
+                        <span className='text-sm'>O ({player1 === "o" ? "You" : "CPU"})</span>
                         <span className='font-bold text-sm'>{amountO}</span>
                     </div>
                 </div>
