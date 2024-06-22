@@ -30,7 +30,7 @@ export default function Result({ isTie, isWinner, playerChoose }: {
                 <div className='container flex flex-col justify-center items-center space-y-6'>
                     <span className='text-xs text-white'>{headerMessage}</span>
                     <p className='text-3xl text-white'>{message}</p>
-                    <div className='flex w-1/2 justify-center gap-4 items-center'>
+                    <div className='flex w-full sm:w-1/2 justify-center gap-4 items-center'>
                         <Link className="flex-1 bg-gray-300 py-2 px-10 text-xs text-center rounded-full font-semibold text-black hover:bg-[#b2b4b6]" href={"/"}>
                             Quit
                         </Link>
